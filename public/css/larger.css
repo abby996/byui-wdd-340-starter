@@ -1,0 +1,111 @@
+/* === Larger screen styles === */
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  padding: 2rem;
+}
+
+.hero-text {
+   max-width: 50%;
+    padding: 3rem;
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.85);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hero-image img {
+  max-width: 400px;
+  height: auto;
+  margin-right: 700px;
+}
+
+/* Upgrades and Reviews side by side */
+.extras {
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 2rem;
+}
+
+.upgrades, .reviews {
+  flex: 1;
+  margin: 0 1rem;
+}
+
+.upgrade-grid {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.reviews ul {
+  padding-left: 1.25rem;
+}
+
+
+/* Style pou navbar la */
+nav {
+    background-color: #1a1a1a; /* koulè background */
+    padding: 10px 20px;
+}
+
+/* Fè lis la ranje orizontal */
+nav ul {
+    list-style: none; /* retire boulèt yo */
+    display: flex;
+    justify-content:baseline; /* santre navbar la */
+    margin: 0;
+    padding: 0;
+}
+
+/* Style pou chak item */
+nav ul li {
+    margin: 0 20px; /* espas ant item yo */
+    font-size: 1.2rem;
+    color: white;
+    cursor: pointer;
+    transition: color 0.3s, transform 0.3s;
+}
+
+/* Efè lè w hover sou item yo */
+nav ul li:hover {
+    color: #ff6b6b; /* chanje koulè sou hover */
+    transform: scale(1.1); /* ti zoom */
+}
+
+
+/* Tools (My Account) sou dwat */
+#tools a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+    margin-left: 90%;
+}
+
+#tools a:hover {
+    color: #ff6b6b;
+}
+
+
+/* Checkerboard Pattern */
+.checkerboard {
+    width: 100%;
+    height: 200px;
+    background-image: 
+        repeating-linear-gradient(
+            45deg,
+            #2c3e50,
+            #2c3e50 20px,
+            #34495e 20px,
+            #34495e 40px
+        );
+    margin: 2rem 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
