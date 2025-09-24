@@ -155,4 +155,67 @@ footer {
 
 
 
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  background: #f9f9f9;
+  color: #222;
+}
+
+main.vehicle-detail {
+  padding: 1rem;
+}
+
+.vehicle-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.vehicle-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+.vehicle-info {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.price {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #004080;
+}
+
+.vehicle-actions {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.7rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 0.3rem;
+  font-weight: 600;
+}
+
+.btn.primary {
+  background: #00703c;
+  color: #fff;
+}
+
+.btn.secondary {
+  background: #e6e6e6;
+  color: #333;
+}
 
