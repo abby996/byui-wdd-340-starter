@@ -3,22 +3,15 @@ const express = require("express")
 const router = new express.Router() 
 const invController = require("../controllers/invController")
 
-
-
 // Route to build inventory by classification view
 router.get("/type/:classificationId", invController.buildByClassificationId);
 
-// Inventory detail route
-router.get('/detail/:id', invController.buildVehicleDetail);
+// Route to build inventory item detail view
+router.get("/item/:inventoryId", invController.buildByInventoryId)
 
 
+
+// Intentional error route 
+router.get('/trigger-error', invController.triggerInventoryError);
 
 module.exports = router;
-
-
-
-
-
-
-
-

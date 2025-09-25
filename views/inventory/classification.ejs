@@ -1,0 +1,15 @@
+<!-- Inserting the main content headings  -->
+<!-- And making the title value as our h1 value with an if statement. -->
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else {
+  res.redirect('/')
+} %>
+
+<%# messages() %>
+
+<!-- Inserting the main content of the view, which the  -->
+<!-- grid item string the utilities function  -->
+<!-- have build out in a string. -->
+
+<%- grid %>

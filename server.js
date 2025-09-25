@@ -5,48 +5,47 @@
 /* ***********************
  * Require Statements
  *************************/
-const express = require ("express")
-const expresslayouts = require ("express-ejs-layouts")
+const express = require("express")
+const expressLayouts = require("express-ejs-layouts")
+const path = require("path")
 const baseController = require("./controllers/baseController")
+const inventoryRoute = require("./routes/inventoryRoute")
+const utilities = require("./utilities/")
+const errorRoute = require("./routes/errorRoute")
+const static = require("./routes/static")
 
 const env = require("dotenv").config()
 const app = express()
-const static = require("./routes/static")
-
-
-
-// Inventory routes
-app.use("/inv", inventoryRoute)
-
-
 
 /* ***********************
- * view engine and template
+ * Middleware Setup
+ *************************/
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static("public"))
+
+/* ***********************
+ * View Engine and Templates
  *************************/
 app.set("view engine", "ejs")
-app.use(expresslayouts)
-app.set("layout", "./layouts/layout") // not at views root
+app.use(expressLayouts)
+app.set("layout", "./layouts/layout")
+app.set("views", path.join(__dirname, "views"))
 
-
+/* ***********************
+ * Routes
+ *************************/
 app.use(static)
+app.use("/inv", inventoryRoute)
+app.use("/error", errorRoute)
 
-//Index route
-app.get("/", function (req, res){
-  res.render("index", {title: "Home"})
-})
-
-utilities.handleErrors(baseController.buildHome)
-
-
+// Index route
 app.get("/", utilities.handleErrors(baseController.buildHome))
-
-
 
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {
   next({status: 404, message: 'Sorry, we appear to have lost that page.'})
 })
-
 
 /* ***********************
 * Express Error Handler
@@ -55,14 +54,22 @@ app.use(async (req, res, next) => {
 app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav()
   console.error(`Error at: "${req.originalUrl}": ${err.message}`)
+  
+  let message
+  if(err.status == 404) {
+    message = err.message
+  } else if(err.status == 500) {
+    message = err.message
+  } else {
+    message = 'Oh no! There was a crash. Maybe try a different route?'
+  }
+  
   res.render("errors/error", {
     title: err.status || 'Server Error',
-    message: err.message,
+    message,
     nav
   })
 })
-
-
 
 /* ***********************
  * Local Server Information
@@ -78,48 +85,5 @@ app.listen(port, () => {
   console.log(`app listening on ${host}:${port}`)
 })
 
-
-
-const express = require("express")
-
-const path = require("path")
-
-// Routers
-
-const inventoryRoute = require("./routes/inventoryRoute")
-
-// Setup
-app.set("view engine", "ejs")
-app.set("views", path.join(__dirname, "views"))
-app.use(express.static("public"))
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-
-// Routes
-app.use("/", require("./routes/baseRoute"))
-app.use("/inv", inventoryRoute)
-
-// Catch-all route if no match (404)
-app.use(async (req, res, next) => {
-  next({
-    status: 404,
-    message: "Sorry, we couldn’t find that page.",
-  })
-})
-
-// Error-handling middleware (catch ANY error)
-app.use(async (err, req, res, next) => {
-  console.error(`Error at: "${req.originalUrl}": ${err.message}`)
-
-  let status = err.status || 500
-  res.status(status).render("errors/error", {
-    title: `${status} Error`,
-    message: err.message,
-    status,
-  })
-})
-
 module.exports = app
 
-const errorRoute = require("./routes/errorRoute")
-app.use("/error", errorRoute)
