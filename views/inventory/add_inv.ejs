@@ -1,0 +1,140 @@
+<!-- Inserting the main content headings  -->
+<!-- And making the title value as our h1 value with an if statement. -->
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else { res.redirect('/') } %>
+
+<!-- This is to display a validation failed messages -->
+<% if (errors) { %>
+<ul class="notice failed">
+  <% errors.array().forEach(error => { %>
+  <li><%= error.msg %></li>
+  <% }) %>
+</ul>
+<% } %>
+
+<!-- The registeration form -->
+<div id="form_container" class="form_holder">
+  <h2 class="reg">Fill New Vehicle Details</h2>
+
+  <p id="req">All fields are required</p>
+
+  <form id="add_inv_form" action="/inv/add_inv" method="post">
+    <%- classificationList %>
+
+    <label for="invmake" class="form label">Vehicle Make:</label>
+    <input
+      type="text"
+      id="invmake"
+      class="form input"
+      name="inv_make"
+      required
+      value="<%= locals.inv_make %>"
+    />
+
+    <label for="invmodel" class="form label">Vehicle Model:</label>
+    <input
+      type="text"
+      id="invmodel"
+      class="form input"
+      name="inv_model"
+      required
+      value="<%= locals.inv_model %>"
+    />
+
+    <label for="invyear" class="form label">Vehicle Year:</label>
+    <input
+      type="text"
+      id="invyear"
+      class="form input"
+      name="inv_year"
+      required
+      pattern="^\d{4}$"
+      placeholder="1234"
+      value="<%= locals.inv_model %>"
+    />
+
+    <label for="invdescription" class="form label">Description:</label>
+    <!-- <textarea -->
+      <!-- name="inv_description" -->
+      <!-- id="invdescription" -->
+      <!-- class="form input" -->
+      <!-- required -->
+      <!-- value="<%# locals.inv_description %>" -->
+    <!-- ></textarea> -->
+    <input
+    type="text"
+    id="invdescription"
+    class="form input"
+    name="inv_description"
+    required
+    value="<%= locals.inv_description %>"
+    />
+
+    <label for="invimage" class="form label">Image path:</label>
+    <input
+      type="text"
+      id="invimage"
+      class="form input"
+      name="inv_image"
+      required
+      placeholder="/images/vehicles/carpic.jpg"
+      value="<%= locals.inv_image %>"
+    />
+
+    <label for="invthumbnail" class="form label">Thumbnail Path:</label>
+    <input
+      type="text"
+      id="invthumbnail"
+      class="form input"
+      name="inv_thumbnail"
+      required
+      placeholder="/images/vehicles/carpic-tn.jpg"
+      value="<%= locals.inv_thumbnail %>"
+    />
+
+    <label for="invprice" class="form label">Vehicle Price:</label>
+    <input
+      type="text"
+      id="invprice"
+      class="form input"
+      name="inv_price"
+      required
+      placeholder="300080"
+      pattern="^\d+(\.\d{1,2})?$"
+      value="<%= locals.inv_price %>"
+    />
+
+    <label for="invmiles" class="form label">Miles:</label>
+    <input
+      type="text"
+      id="invmiles"
+      class="form input"
+      name="inv_miles"
+      required
+      placeholder="348590"
+      pattern="^\d+$"
+      value="<%= locals.inv_miles %>"
+    />
+
+    <label for="invcolor" class="form label">Color:</label>
+    <input
+      type="text"
+      id="invcolor"
+      class="form input"
+      name="inv_color"
+      required
+      placeholder="blue"
+      pattern="^[A-Za-z]+$"
+      value="<%= locals.inv_color %>"
+    />
+
+    <input
+      type="submit"
+      id="add_vehicle"
+      class="form_done"
+      name="submit_button"
+      value="Add Vehicle"
+    />
+  </form>
+</div>

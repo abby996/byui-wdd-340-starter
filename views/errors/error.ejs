@@ -1,22 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <%- include('../partials/head') %>
-</head>
-<body>
-  <header>
-    <%- include('../partials/header') %>
-    <%- include('../partials/nav') %>
-  </header>
+<!-- the title render function to display the title  -->
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else {
+  res.redirect('/')
+} %>
 
-  <main>
-    <h1><%= status %> Error</h1>
-    <p><%= message %></p>
-    <a href="/">Return Home</a>
-  </main>
-
-  <footer>
-    <%- include('../partials/footer') %>
-  </footer>
-</body>
-</html>
+<!-- The unescaped ejs code  -->
+ <%- message %>

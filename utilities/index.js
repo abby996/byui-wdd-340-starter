@@ -149,49 +149,46 @@ Util.formatMileage = function(miles) {
     return new Intl.NumberFormat('en-US').format(miles);
 }
 
-// Wrap vehicle data in HTML
-Util.wrapVehicleInHTML = function(vehicle) {
-    return `
-        <div class="vehicle-detail">
-            <div class="vehicle-image">
-                <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}" class="img-fluid">
-            </div>
-            
-            <div class="vehicle-info">
-                <div class="vehicle-header">
-                    <h1>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h1>
-                    <div class="vehicle-price">${Util.formatPrice(vehicle.inv_price)}</div>
-                </div>
-                
-                <div class="vehicle-specs">
-                    <div class="spec-item">
-                        <span class="spec-label">Mileage:</span>
-                        <span class="spec-value">${Util.formatMileage(vehicle.inv_miles)} miles</span>
-                    </div>
-                    
-                    <div class="spec-item">
-                        <span class="spec-label">Color:</span>
-                        <span class="spec-value">${vehicle.inv_color}</span>
-                    </div>
-                    
-                    <div class="spec-item">
-                        <span class="spec-label">Stock #:</span>
-                        <span class="spec-value">${vehicle.inv_id}</span>
-                    </div>
-                </div>
-                
-                <div class="vehicle-description">
-                    <h3>Vehicle Description</h3>
-                    <p>${vehicle.inv_description}</p>
-                </div>
-                
-                <div class="vehicle-actions">
-                    <button class="btn-primary">Schedule Test Drive</button>
-                    <button class="btn-secondary">Check Financing</button>
-                </div>
-            </div>
-        </div>
-    `;
-}
+
+
+
+/* ****************************************
+ * This function build the select html element.
+ **************************************** */
+Util.buildClassificationList = async function (classification_id = null) {
+    let data = await invModel.getClassifications()
+    let classificationList =
+      '<select name="classification_id" class="form input" id="classificationList" required>'
+    classificationList += "<option value=''>Choose a Classification</option>"
+    data.rows.forEach((row) => {
+      classificationList += '<option value="' + row.classification_id + '"'
+      if (
+        classification_id != null &&
+        row.classification_id == classification_id
+      ) {
+        classificationList += " selected "
+      }
+      classificationList += ">" + row.classification_name + "</option>"
+    })
+    classificationList += "</select>"
+    return classificationList
+  }
+  
+
+/* ****************************************
+ * Middleware For Handling Errors
+ * Wrap other function in this for
+ * General Error Handling
+ **************************************** */
+Util.handleErrors = (fn) => (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next);
+
+
+
+module.exports = Util;
+
+
+
+
 
 module.exports = Util;

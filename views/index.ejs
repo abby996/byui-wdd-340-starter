@@ -1,7 +1,12 @@
 
 
-  <main>
+  
     <h1>Welcome to CSE Motors!</h1>
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="flash-message">
+        <%= message.text || message %>
+    </div>
+<% } %>
 
     <!-- Hero / Featured Car -->
     <section class="hero">
@@ -57,6 +62,5 @@
         </ul>
       </div>
     </section>
-  </main>
-
+ 
  

@@ -92,4 +92,86 @@ invCont.triggerInventoryError = async function(req, res, next) {
     }
 }
 
+
+
+
+
+/* ****************************************
+*  Process the add inventory
+* *************************************** */
+invCont.addInventory = async function (req, res) {
+  let nav = await utilities.getNav()
+  const { classification_id,
+    inv_make,
+    inv_model,
+    inv_description,
+    inv_year,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color
+ } = req.body
+  
+  const regResult = await invModel.addInventory(
+    classification_id,
+    inv_make,
+    inv_model,
+    inv_description,
+    inv_year,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color
+  )
+
+  if (regResult) {
+    req.flash(
+      "notice successful",
+      `Congratulations, you have added ${inv_make} ${inv_model} to your inventory.`
+    )
+    res.status(201).render("./inventory/", {
+      title: "Vehicles Management",
+      nav,
+      errors: null,
+    })
+  } else {
+    req.flash("notice failed", "Sorry, there was an error in the proccess of adding the inventory, try again.")
+    res.status(501).render("./inventory/add_inv", {
+      title: "Add New Inventory",
+      nav,
+      errors: null,
+    })
+  }
+}
+
+/* ****************************************
+*  Process the add classification
+* *************************************** */
+invCont.addClassification = async function (req, res) {
+  let nav = await utilities.getNav()
+  const { classification_name } = req.body
+  
+  const regResult = await invModel.addClassification( classification_name )
+  if (regResult) {
+    req.flash(
+      "notice successful",
+      `Congratulations, you have added ${classification_name} to your classification list.`
+    )
+    res.status(201).render("./inventory/", {
+      title: "Vehicles Management",
+      nav,
+      errors: null,
+    })
+  } else {
+    req.flash("notice failed", "Sorry, there was an error in the proccess of adding the classification, try again.")
+    res.status(501).render("./inventory/add_class", {
+      title: "Add New Classification",
+      nav,
+      errors: null,
+    })
+  }
+}
+
 module.exports = invCont;

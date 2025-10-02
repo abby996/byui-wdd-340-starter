@@ -16,6 +16,12 @@ const static = require("./routes/static")
 
 const env = require("dotenv").config()
 const app = express()
+const session = require("express-session")
+const pool = require('./database/')
+const accountRoute = require("./routes/accountRoute")
+const bodyParser = require("body-parser")
+
+
 
 /* ***********************
  * Middleware Setup
@@ -23,6 +29,9 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static("public"))
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 /* ***********************
  * View Engine and Templates
@@ -36,8 +45,16 @@ app.set("views", path.join(__dirname, "views"))
  * Routes
  *************************/
 app.use(static)
+
+app.use("/account", accountRoute)
+/* inventory */
 app.use("/inv", inventoryRoute)
+
+
 app.use("/error", errorRoute)
+
+// Account routes
+app.use("/account", accountRoute)
 
 // Index route
 app.get("/", utilities.handleErrors(baseController.buildHome))
@@ -87,3 +104,26 @@ app.listen(port, () => {
 
 module.exports = app
 
+
+
+// Express Messages Middleware
+app.use(require('connect-flash')())
+app.use(function(req, res, next){
+  res.locals.messages = require('express-messages')(req, res)
+  next()
+})
+
+
+/* ***********************
+ * Middleware
+ * ************************/
+ app.use(session({
+  store: new (require('connect-pg-simple')(session))({
+    createTableIfMissing: true,
+    pool,
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  name: 'sessionId',
+}))

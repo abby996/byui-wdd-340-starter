@@ -1,0 +1,43 @@
+<!-- Inserting the main content headings  -->
+<!-- And making the title value as our h1 value with an if statement. -->
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else { res.redirect('/') } %> 
+
+
+<!-- This is to display a validation failed messages -->
+ <% if (errors) { %>
+  <ul class="notice failed">
+ <% errors.array().forEach(error => { %>
+   <li><%= error.msg %></li>
+<%  }) %>
+ </ul>
+<% } %>
+
+<div id="form_container" class="form_holder">
+  <form id="add_class_form" action="/inv/add_class" method="post">
+    <p class="pattern">
+      Name Must be Alphabtic Characters Only, <br />
+      (No space or special characters)
+    </p>
+    <label for="className" class="form label">Classification Name:</label>
+    <input
+      type="text"
+      id="className"
+      class="form input"
+      name="classification_name"
+      required
+      pattern="^[A-Za-z]+$"
+      placeholder="i.e 'Bigcar'"
+      value="<%= locals.classification_name %>"
+    />
+
+    <input
+      type="submit"
+      id="submit"
+      class="form_done"
+      name="submit_button"
+      value="Add Classification"
+    />
+  </form>
+</div>
