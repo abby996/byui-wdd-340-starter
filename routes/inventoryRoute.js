@@ -14,4 +14,6 @@ router.get("/item/:inventoryId", invController.buildByInventoryId)
 // Intentional error route 
 router.get('/trigger-error', invController.triggerInventoryError);
 
+router.post("/update/", invController.updateInventory)
+
 module.exports = router;

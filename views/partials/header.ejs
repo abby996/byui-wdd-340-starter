@@ -11,5 +11,34 @@
   <div id="tools">
 
       <a class="links" title="Click to log in" href="/account/login">My Account</a>
+  
   </div>
+
+
+<div id="tools">
+
+    <!-- This is a logic to check if any user is logged in the site and make use of it details. -->
+    <% if (loggedin){ %>
+    <a
+      id="userIn"
+      class="links acc_link"
+      title="Click to manage account info"
+      href="/account"
+      ><%= accountData.account_firstname %> <%= accountData.account_lastname %>
+    </a>
+    <a
+      id="logout"
+      class="links acc_link"
+      title="Click to logout"
+      href="/account/logout"
+      >Logout</a
+    >
+    <% }else { %>
+    <a class="links acc_link" title="Click to log in" href="/account/login"
+      >My Account</a
+    >
+    <% } %> 
+    
+  </div>
+
 </header>

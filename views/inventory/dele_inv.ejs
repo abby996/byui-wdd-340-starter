@@ -1,0 +1,86 @@
+
+<!-- Inserting the main content headings  -->
+<!-- And making the title value as our h1 value with an if statement. -->
+<% if (title) { %>
+<h1 class="page_head"><%= title %></h1>
+<% } else { res.redirect('/') } %>
+
+<!-- This is to display a validation failed messages -->
+<% if (errors) { %>
+<ul class="notice failed">
+  <% errors.array().forEach(error => { %>
+  <li><%= error.msg %></li>
+  <% }) %>
+</ul>
+<% } %>
+
+<!-- The registeration form -->
+<div id="form_container" class="form_holder">
+  <h2 class="reg">Delete Vehicle</h2>
+
+  <form id="update_form" action="/inv/delete" method="post">
+
+    <label for="invmake" class="form label">Vehicle Make:</label>
+    <input
+      type="text"
+      id="invmake"
+      class="form input"
+      name="inv_make"
+      required
+      value="<%= locals.inv_make %>"
+      readonly
+    />
+
+    <label for="invmodel" class="form label">Vehicle Model:</label>
+    <input
+      type="text"
+      id="invmodel"
+      class="form input"
+      name="inv_model"
+      required
+      value="<%= locals.inv_model %>"
+      readonly
+    />
+
+    <label for="invyear" class="form label">Vehicle Year:</label>
+    <input
+      type="text"
+      id="invyear"
+      class="form input"
+      name="inv_year"
+      required
+      pattern="^\d{4}$"
+      placeholder="1234"
+      value="<%= locals.inv_year %>"
+      readonly
+    />
+
+    <label for="invprice" class="form label">Vehicle Price:</label>
+    <input
+      type="text"
+      id="invprice"
+      class="form input"
+      name="inv_price"
+      required
+      placeholder="300080"
+      pattern="^\d+(\.\d{1,2})?$"
+      value="<%= locals.inv_price %>"
+      readonly
+    />
+
+    <p>Confirm Deletion - The delete is permanent.</p>
+
+    <input
+      type="submit"
+      id="update_vehicle"
+      class="form_done"
+      name="submit_button"
+      value="Delete Vehicle"
+    />
+
+    <% if (locals.inv_id) { %>
+  <input type="hidden" name="inv_id" value="<%= locals.inv_id %>">
+
+<% } %>
+  </form>
+</div>

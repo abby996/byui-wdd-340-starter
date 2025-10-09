@@ -1,0 +1,32 @@
+
+<!-- Inserting the main content headings  -->
+<!-- And making the title value as our h1 value with an if statement. -->
+<% if (title) { %>
+<h1 class="page_head"><%= title %></h1>
+<% } else { res.redirect('/') } %> <%- messages() %>
+
+<!-- This is to display a validation failed messages -->
+<% if (errors) { %>
+<ul class="notice failed">
+  <% errors.array().forEach(error => { %>
+  <li><%= error.msg %></li>
+  <% }) %>
+</ul>
+<% } %>
+
+<!-- This is a logic to check if any user is logged in the site and make use of it details. -->
+<% if (loggedin){ %>
+<h2 id="acc_h2" class="headers">Welcome <%= accountData.account_firstname %></h2>
+<a
+  href="/account/update/<%= accountData.account_id %>"
+  id="acc_update"
+  class="links m_link"
+  title="Click to manage account info"
+  >Updata Account Information</a
+>
+<% if (accountData.account_type !== 'Client') { %>
+<h3 id="acc_h3" class="headers">Inventory Management</h3>
+<p>
+  <a href="/inv" id="inv_manage" class="links m_link">Manage Inventory</a>
+</p>
+<% } %> <% } %>

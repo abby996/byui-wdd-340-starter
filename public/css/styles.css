@@ -564,3 +564,158 @@ input:focus:invalid {
   text-align: center;
   }
 }
+
+
+
+
+/* flash message css declarations.*/
+.successful {
+  width: 90%;
+  font-family: 'arimo';
+  padding: .5rem;
+  border: 1px solid #0b870b;
+  color: #0b870b;
+  border-radius: 4px;
+  margin: auto;
+}
+.failed {
+  width: 90%;
+  font-family: 'arimo';
+  padding: .5rem;
+  border: 1px solid #b50306;
+  color: #b50306;
+  border-radius: 4px;
+  margin: auto;
+}
+
+/* **************************************
+* This is the css code for the vehicles management view page.
+* ************************************* */
+.add_item {
+  width: 45%;
+  text-align: center;
+  font-family: 'arimo';
+  display: block;
+  text-decoration: none;
+  padding: .5rem;
+  margin: 1.5rem auto;
+  border-radius: 4px;
+  color: #fff;
+}
+#add_classification {
+  background-color: #004e98;
+}
+#add_inventory {
+  background-color: #006c97;
+}
+#add_classification:hover {
+  background-color: #fff;
+  color: #0b0014;
+  border: 2px solid #004e98;
+}
+#add_inventory:hover {
+  background-color: #fff;
+  color: #0b0014;
+  border: 2px solid #009ddc;
+}
+
+input:focus:valid{
+  border: 2px solid green;
+  background-color: rgba(34, 225, 45, .4);
+}
+input:focus:invalid {
+  border: 2px solid red;
+  background-color: #ff000453;
+
+}
+
+/* the css rules for the account index page elements */
+.headers {
+  margin: 1rem .8rem;
+  color: #004e98;
+  font-family: 'Oswald';
+}
+.m_link {
+  margin: 0 1rem;
+  padding: .5rem;
+  border: 2px solid #0054af;
+  border-radius: 5px;
+  text-decoration: none;
+  padding: .5rem;
+  text-align: center;
+  font-family: 'arimo';
+  color: #000;
+}
+
+/* The css rules for the inventory management table */
+.inv_table {
+  width: 60%;
+  text-align: left;
+  padding: .5rem;
+}
+tr {
+  padding: 1rem;
+  text-align: justify;
+}
+th {
+  color: #0054af;
+  padding: .4rem;
+  font-family: 'arimo';
+}
+td {
+  padding: .2rem;
+  font-family: 'arimo';
+}
+tbody > tr {
+  margin: .5rem;
+}
+.inv_modify {
+  text-decoration: none;
+  color: #034c6a;
+}
+.inv_delete {
+  text-decoration: none;
+  color: rgb(159, 6, 6);
+}
+
+@media only screen and (min-width: 64em){
+  body {
+    background-image: url("/images/site/small_check.jpg");
+  }
+
+  #wrapper{
+    max-width: 1000px;
+    margin: 2em auto;
+    background-color: #ffffff;
+    border: 6px solid #0977ec;
+    border-radius: 5px;
+    padding: 1em;
+  }
+
+  #upgrades_review_flex {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  #upgrades_grid, #review_section {
+    width: 50%;
+  }
+
+
+  /* **************************************
+  * This is the css code for the item view page that uses flex.
+  * ************************************* */
+  #inv_item {
+  flex-direction: row;
+  }
+
+
+  /* **************************************
+* This is the css code for the account view page.
+* ************************************* */
+  #form_container {
+  width:60% ;
+  margin: 4rem auto;
+  text-align: center;
+  }
+}

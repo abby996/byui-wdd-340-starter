@@ -1,0 +1,35 @@
+
+<!-- Inserting the main content headings  -->
+<!-- And making the title value as our h1 value with an if statement. -->
+<% if (title) { %>
+<h1 class="page_head"><%= title %></h1>
+<% } else {
+  res.redirect('/')
+} %>
+
+<%- messages() %>
+
+
+
+ 
+
+   
+ <li><a href="/inv/add-classification" title="Click to add a new vehicle classification">Add New Classification</a></li>
+ <li><a href="/inv/add-inventory" title="Click to add a new vehicle">Add New Vehicle</a></li>
+        
+
+    <h2>Manage Inventory</h2>
+    <p>Choose a classification to see those inventory items.</p>
+    <!-- This part is for the existing inventory management -->
+    <select name="classificationSelect" id="classificationSelect">
+        <option value="">Choose a Classification</option>
+        <!-- Populate with classifications from the database -->
+        {{range .classifications}}
+        <option value="{{.ClassificationID}}">{{.ClassificationName}}</option>
+        {{end}}
+    </select>
+    <table id="inventoryDisplay">
+        <!-- JavaScript will populate this -->
+    </table>
+    <noscript>JavaScript must be enabled to use this page.</noscript>
+    <script src="/js/inventory.js"></script>

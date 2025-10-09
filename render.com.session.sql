@@ -98,3 +98,97 @@ USE magazine;
 SELECT magazineName,
     FORMAT (magazineprice * 100 / 3, 2) AS '3% off'
 FROM magazine;
+
+
+
+
+
+
+USE v_art;
+
+-- 1
+SELECT artfile
+FROM artwork
+WHERE period = 'Impressionism';
+-- 2
+SELECT artfile
+FROM artwork
+WHERE artdescription = 'flower';
+
+-- 3
+SELECT a.fname, a.lname, artwork.title
+FROM artist a
+JOIN artwork ON a.artist_id = artwork.artist_id;
+
+-- 4
+USE magazine;
+SELECT 
+    m.magazineName, s.subscriberLastName, s.subscriberFirstName
+FROM subscription sub
+JOIN 
+    magazine m ON sub.magazineKey = m.magazineKey
+JOIN 
+    subscriber s ON sub.subscriberKey = s.subscriberKey
+ORDER BY m.magazineName;
+
+-- 5 
+SELECT  m.magazineName
+FROM subscription sub
+JOIN magazine m ON  sub.magazineKey = m.magazineKey
+JOIN 
+    subscriber s ON sub.subscriberKey = s.subscriberKey
+
+WHERE subscriberFirstName ='samantha'
+;
+-- 6
+SELECT  
+FROM subscription sub
+JOIN magazine m ON  sub.magazineKey = m.magazineKey
+JOIN 
+    subscriber s ON sub.subscriberKey = s.subscriberKey
+
+WHERE subscriberFirstName ='samantha';
+
+USE employees;
+
+SELECT e.first_name, e.last_name
+FROM employees e
+JOIN dept_emp de ON e.emp_no = de.emp_no
+JOIN departments d ON de.dept_no = d.dept_no
+WHERE d.dept_name = 'Customer Service'
+ORDER BY e.last_name ASC
+LIMIT 5;
+
+-- 7
+
+SELECT e.first_name, e.last_name, d.dept_name, s.salary, s.from_date
+
+FROM employees e
+JOIN salaries s ON e.emp_no = s.emp_no
+JOIN dept_emp de ON e.emp_no = de.emp_no
+JOIN departmentS d ON de.dept_no = d.dept_no
+WHERE e.first_name = 'Berni' AND e.last_name = 'Genin'
+ORDER BY from_date DESC
+LIMIT 1; 
+
+-- 8
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

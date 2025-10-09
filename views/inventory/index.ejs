@@ -1,0 +1,30 @@
+
+<!-- Inserting the main content headings  -->
+<!-- And making the title value as our h1 value with an if statement. -->
+<% if (title) { %>
+<h1 class="page_head"><%= title %></h1>
+<% } else {
+  res.redirect('/')
+} %>
+
+<%- messages() %>
+
+
+<!-- This is the link to call the add classification view page with the form -->
+<a href="/inv/add_class" id="add_classification" class="add_item">Add Classification</a>
+
+<!-- This is the link to call the add inventory view page with the form -->
+<a href="/inv/add_inv" id="add_inventory" class="add_item">Add Inventory</a>
+
+<!-- The heading for the inventory management. -->
+ <h2 class="headers">Manage Inventory</h2>
+
+ <p>Select a classification to see the inventories of the classification</p>
+
+<%- classificationList %>
+
+<table id="inventoryDisplay" class="inv_table table"></table>
+
+<noscript>JavaScript must be enabled to use this page.</noscript>
+
+<script src="../../js/inventory.js"></script>

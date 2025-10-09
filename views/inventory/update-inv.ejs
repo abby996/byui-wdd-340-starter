@@ -1,7 +1,7 @@
 <!-- Inserting the main content headings  -->
 <!-- And making the title value as our h1 value with an if statement. -->
 <% if (title) { %>
-<h1><%= title %></h1>
+<h1 class="page_head"><%= title %></h1>
 <% } else { res.redirect('/') } %>
 
 <!-- This is to display a validation failed messages -->
@@ -15,11 +15,9 @@
 
 <!-- The registeration form -->
 <div id="form_container" class="form_holder">
-  <h2 class="reg">Fill New Vehicle Details</h2>
+  <h2 class="reg">Edit Vehicle Details</h2>
 
-  <p id="req">All fields are required</p>
-
-  <form id="add_inv_form" action="/inv/add_inv" method="post">
+  <form id="update_form" action="/inv/edit" method="post">
     <%- classificationList %>
 
     <label for="invmake" class="form label">Vehicle Make:</label>
@@ -51,24 +49,17 @@
       required
       pattern="^\d{4}$"
       placeholder="1234"
-      value="<%= locals.inv_model %>"
+      value="<%= locals.inv_year %>"
     />
 
     <label for="invdescription" class="form label">Description:</label>
-    <!-- <textarea -->
-      <!-- name="inv_description" -->
-      <!-- id="invdescription" -->
-      <!-- class="form input" -->
-      <!-- required -->
-      <!-- value="<%# locals.inv_description %>" -->
-    <!-- ></textarea> -->
     <input
-    type="text"
-    id="invdescription"
-    class="form input"
-    name="inv_description"
-    required
-    value="<%= locals.inv_description %>"
+      type="text"
+      id="invdescription"
+      class="form input"
+      name="inv_description"
+      required
+      value="<%= locals.inv_description %>"
     />
 
     <label for="invimage" class="form label">Image path:</label>
@@ -134,11 +125,14 @@
       id="update_vehicle"
       class="form_done"
       name="submit_button"
-      value="Upade Vehicle"
+      value="Update Vehicle"
+      disabled
     />
 
-    <input type="hidden" name="inv_id"
-    <% if(locals.inv_id) { %> value="<%= locals.inv_id %>"
-     <% } %>>
+    <% if (locals.inv_id) { %>
+    <input type="hidden" name="inv_id" value="<%= locals.inv_id %>" />
+    <% } %>
   </form>
 </div>
+
+<script src="../../js/inv-update.js"></script>
