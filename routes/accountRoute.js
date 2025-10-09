@@ -15,11 +15,11 @@ router.get(
   utilities.handleErrors(accountController.buildRegister)
 );
 
-// The route for the registeration post method.
+// The route for the registration post method.
 // Process the registration data
 router.post(
   "/register",
-  regValidate.registationRules(),
+  regValidate.registrationRules(), // Fixed: registrationRules (not registationRules)
   regValidate.checkRegData,
   utilities.handleErrors(accountController.registerAccount)
 );
@@ -28,11 +28,11 @@ router.post(
 router.post(
   "/login",
   regValidate.loginRules(),
-  regValidate.checklogData,
+  regValidate.checkLoginData, // Fixed: checkLoginData (not checklogData)
   utilities.handleErrors(accountController.accountLogin)
 );
 
-// Thw account management view route
+// The account management view route
 router.get(
   "/",
   utilities.checkLogin,

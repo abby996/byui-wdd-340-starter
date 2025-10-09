@@ -7,7 +7,6 @@ const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
 
-
 /* ****************************************
 *  Deliver login view
 * *************************************** */
@@ -127,36 +126,151 @@ async function accountLogin(req, res) {
   }
 }
 
-
-
-/* ***************************
- *  Build edit inventory view
- * ************************** */
-invCont.editInventoryView = async function (req, res, next) {
-  const inv_id = parseInt(req.params.inv_id)
-  let nav = await utilities.getNav()
-  const itemData = await invModel.getInventoryById(inv_id)
-  const classificationSelect = await utilities.buildClassificationList(itemData.classification_id)
-  const itemName = `${itemData.inv_make} ${itemData.inv_model}`
-  res.render("./inventory/edit-inventory", {
-    title: "Edit " + itemName,
+async function buildManagementView(req, res) {
+  let nav = await utilities.getNav();
+  res.render("account/index", {
+    title: "Account Management",
     nav,
-    classificationSelect: classificationSelect,
     errors: null,
-    inv_id: itemData.inv_id,
-    inv_make: itemData.inv_make,
-    inv_model: itemData.inv_model,
-    inv_year: itemData.inv_year,
-    inv_description: itemData.inv_description,
-    inv_image: itemData.inv_image,
-    inv_thumbnail: itemData.inv_thumbnail,
-    inv_price: itemData.inv_price,
-    inv_miles: itemData.inv_miles,
-    inv_color: itemData.inv_color,
-    classification_id: itemData.classification_id
-  })
+  });
 }
 
 
 
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin }
+/* ****************************************
+ *  Deliver account update view
+ * *************************************** */
+async function buildUpdateView(req, res, next) {
+  let nav = await utilities.getNav();
+  const account_id = req.params.accountId;
+  const accountInfo = await accountModel.getAccountById(account_id);
+  res.render("account/update", {
+    title: "Updata Your Account",
+    nav,
+    errors: null,
+    account_firstname: accountInfo.account_firstname,
+    account_lastname: accountInfo.account_lastname,
+    account_email: accountInfo.account_email,
+    account_id: accountInfo.account_id,
+  });
+}
+
+/* ****************************************
+ *  Process the account update
+ * *************************************** */
+async function updateProfileInfo(req, res, next) {
+  let nav = await utilities.getNav();
+  const { account_id, account_firstname, account_lastname, account_email } =
+    req.body;
+
+  const updateResult = await accountModel.updateAccountById(
+    account_id,
+    account_firstname,
+    account_lastname,
+    account_email
+  );
+
+  if (updateResult) {
+    req.flash(
+      "notice successful",
+      `Your account information ${account_firstname} ${account_lastname} was successfully updated.`
+    );
+    res.redirect("/account/");
+  } else {
+    req.flash(
+      "notice failed",
+      "Sorry, the your account information update failed."
+    );
+    res.status(501).render("account/update", {
+      title: "Updata Your Account",
+      nav,
+      errors: null,
+      account_id,
+      account_firstname,
+      account_lastname,
+      account_email,
+    });
+  }
+}
+
+/* ****************************************
+ *  Process the account password update
+ * *************************************** */
+async function changePassword(req, res, next) {
+  let nav = await utilities.getNav();
+  const { account_id, account_password } = req.body;
+  try {
+    // Hash the password before storing
+    let hashedPassword;
+    try {
+      // regular password and cost (salt is generated automatically)
+      hashedPassword = await bcrypt.hashSync(account_password, 10);
+    } catch (error) {
+        req.flash(
+          "notice failed",
+          "Sorry, there was an error processing the password update."
+        );
+        res.status(500).render("account/update", {
+          title: "Updata Your Account",
+          nav,
+          errors: null,
+          account_id,
+        });
+      }
+
+    const changePassword = await accountModel.updatePasswordById(
+      account_id,
+      hashedPassword
+    );
+    if (changePassword) {
+      req.flash(
+        "notice successful",
+        `Your account password was successfully updated.`
+      );
+      res.redirect("/account/");
+    } else {
+        req.flash(
+          "notice failed",
+          "Sorry, your account password update failed."
+        );
+        res.status(501).render("account/update", {
+          title: "Updata Your Account",
+          nav,
+          errors: null,
+          account_id,
+        });
+      }
+  } catch (error) {
+    throw new Error("Password update failed at hashing");
+  }
+}
+
+/* ****************************************
+ *  Process account logout
+ * *************************************** */
+async function accountLogout(req, res) {
+   if (req.cookies.jwt){
+
+    res.clearCookie("jwt")
+
+    req.flash("notice successful", "You have successfully logged out.")
+    return res.redirect("/")
+
+  }else {
+    req.flash("notice failed", "Please log in.")
+    return res.redirect("/account/login")
+  }
+}
+
+
+module.exports = {
+  buildLogin,
+  buildRegister,
+  registerAccount,
+  accountLogin,
+  buildManagementView,
+  buildUpdateView,
+  updateProfileInfo,
+  changePassword,
+  accountLogout,
+};
