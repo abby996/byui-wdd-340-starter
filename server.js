@@ -14,7 +14,7 @@ const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
 const accountRoute = require("./routes/accountRoute")
 const errorRoute = require("./routes/errorRoute")
-const static = require("./routes/static")
+const staticRoutes = require("./routes/static")
 const utilities = require("./utilities/")
 require("dotenv").config()
 
@@ -69,7 +69,7 @@ app.use((req, res, next) => {
 /* ***********************
  * Routes
  *************************/
-app.use(static)
+app.use(staticRoutes)
 app.use("/account", accountRoute)
 app.use("/inv", inventoryRoute)
 app.use("/error", errorRoute)
@@ -113,6 +113,6 @@ app.listen(port, () => {
   console.log(`✅ App listening on ${host}:${port}`)
 })
 
-app.use(utilities.checkJWTToken)
+
 
 module.exports = app

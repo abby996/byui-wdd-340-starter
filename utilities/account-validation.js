@@ -115,11 +115,10 @@ validate.checkLoginData = async (req, res, next) => {
   }
   next()
 }
-
 /*  **********************************
  *  Account update Data Validation Rules
  * ********************************* */
-validate.profileDetailsRules = () => { // FIXED: Removed (req, res) parameters
+validate.profileDetailsRules = () => {
   return [
     // firstname is required and must be string
     body("account_firstname")
@@ -146,14 +145,34 @@ validate.profileDetailsRules = () => { // FIXED: Removed (req, res) parameters
       .normalizeEmail()
       .withMessage("A valid email is required.")
       .custom(async (account_email, { req }) => {
+        const account_id = req.body.account_id;
+        // Get the account with this email
+        const existingAccount = await accountModel.getAccountByEmail(account_email);
+        // If email exists and belongs to a different account, throw error
+        if (existingAccount && existingAccount.account_id != account_id) {
+          throw new Error("Email exists. Please use a different email");
+        }
+      }),
+  ]
+}
+
+    // valid email is required and cannot already exist in the DB
+    body("account_email")
+      .trim()
+      .escape()
+      .notEmpty()
+      .isEmail()
+      .normalizeEmail()
+      .withMessage("A valid email is required.")
+      .custom(async (account_email, { req }) => {
         const account_id = req.body.account_id
         const emailExists = await accountModel.checkExistingEmail(account_email);
         if (emailExists && emailExists.account_id !== account_id) { // FIXED: Check if emailExists exists
           throw new Error("Email exists. Please use a different email");
         }
       }),
-  ]
-}
+  
+
 
 /* ******************************
  * Check data and return errors or continue to registration

@@ -3,8 +3,63 @@ const Util = {}
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
+/* ****************************************
+ * Middleware to set authentication status for all views
+ * *************************************** */
+Util.setAuthStatus = (req, res, next) => {
+    const token = req.cookies.jwt;
+    
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+            res.locals.loggedin = true;
+            res.locals.accountData = decoded;
+            res.locals.isEmployeeOrAdmin = (decoded.account_type === "Employee" || decoded.account_type === "Admin");
+        } catch (error) {
+            res.locals.loggedin = false;
+            res.locals.accountData = null;
+            res.locals.isEmployeeOrAdmin = false;
+        }
+    } else {
+        res.locals.loggedin = false;
+        res.locals.accountData = null;
+        res.locals.isEmployeeOrAdmin = false;
+    }
+    
+    next();
+};
 
+/* ****************************************
+ * Middleware to check if user is Employee or Admin
+ * For inventory management routes
+ * *************************************** */
+Util.checkEmployeeOrAdmin = async (req, res, next) => {
+    try {
+        // Get the JWT token from cookies
+        const token = req.cookies.jwt;
+        
+        if (!token) {
+            req.flash("notice", "Please log in to access this page.");
+            return res.redirect("/account/login");
+        }
 
+        // Verify the token
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        
+        // Check account type
+        if (decoded.account_type !== "Employee" && decoded.account_type !== "Admin") {
+            req.flash("notice", "Access denied. Employee or Admin privileges required.");
+            return res.redirect("/account/login");
+        }
+
+        // User has required privileges, continue
+        next();
+    } catch (error) {
+        // Token is invalid or expired
+        req.flash("notice", "Please log in to access this page.");
+        return res.redirect("/account/login");
+    }
+};
 
 /* ************************
  * Constructs the nav HTML unordered list
@@ -154,9 +209,6 @@ Util.formatMileage = function(miles) {
     return new Intl.NumberFormat('en-US').format(miles);
 }
 
-
-
-
 /* ****************************************
  * This function build the select html element.
  **************************************** */
@@ -178,17 +230,6 @@ Util.buildClassificationList = async function (classification_id = null) {
     classificationList += "</select>"
     return classificationList
   }
-  
-
-/* ****************************************
- * Middleware For Handling Errors
- * Wrap other function in this for
- * General Error Handling
- **************************************** */
-Util.handleErrors = (fn) => (req, res, next) =>
-  Promise.resolve(fn(req, res, next)).catch(next);
-
-
 
 /* ****************************************
  *  Check Login
@@ -201,8 +242,6 @@ Util.handleErrors = (fn) => (req, res, next) =>
     return res.redirect("/account/login")
   }
  }
-
-
 
 /* ****************************************
 * Middleware to check token validity
@@ -226,6 +265,5 @@ Util.checkJWTToken = (req, res, next) => {
   next()
  }
 }
-
 
 module.exports = Util;

@@ -2,10 +2,8 @@
 const utilities = require("../utilities/")
 const accountModel = require("../models/account-model")
 const bcrypt = require("bcryptjs")
-
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
-
 
 /* ****************************************
 *  Deliver login view
@@ -28,16 +26,12 @@ async function buildRegister(req, res, next){
         title: "Register",
         nav,
         errors: null,
-        
     })
 }
-
 
 /* ****************************************
 *  Process Registration
 * *************************************** */
-
-
 async function registerAccount(req, res) {
   let nav = await utilities.getNav()
   const { account_firstname, account_lastname, account_email, account_password } = req.body
@@ -48,12 +42,17 @@ async function registerAccount(req, res) {
     // regular password and cost (salt is generated automatically)
     hashedPassword = await bcrypt.hashSync(account_password, 10)
   } catch (error) {
-    req.flash("notice failed", 'Sorry, there was an error processing the registration.')
+    // FIX: Use correct flash message type
+    req.flash("notice", 'Sorry, there was an error processing the registration.')
     res.status(500).render("account/register", {
       title: "Registration",
       nav,
       errors: null,
+      account_firstname,
+      account_lastname,
+      account_email,
     })
+    return
   }
   
   const regResult = await accountModel.registerAccount(
@@ -64,9 +63,10 @@ async function registerAccount(req, res) {
   )
 
   if (regResult) {
+    // FIX: Use correct flash message type
     req.flash(
-      "notice successful",
-      `Congratulations, you\'re registered ${account_firstname}. Please log in.`
+      "notice",
+      `Congratulations, you're registered ${account_firstname}. Please log in.`
     )
     res.status(201).render("account/login", {
       title: "Login",
@@ -74,15 +74,18 @@ async function registerAccount(req, res) {
       errors: null,
     })
   } else {
-    req.flash("notice failed", "Sorry, the registration failed.")
+    // FIX: Use correct flash message type and pass form data back
+    req.flash("notice", "Sorry, the registration failed.")
     res.status(501).render("account/register", {
       title: "Registration",
       nav,
       errors: null,
+      account_firstname,
+      account_lastname,
+      account_email,
     })
   }
 }
-
 
 /* ****************************************
  *  Process login request
@@ -104,7 +107,18 @@ async function accountLogin(req, res) {
   try {
     if (await bcrypt.compare(account_password, accountData.account_password)) {
       delete accountData.account_password
-      const accessToken = jwt.sign(accountData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 * 1000 })
+      // FIX: Include account_type in JWT token
+      const accessToken = jwt.sign(
+        {
+          account_id: accountData.account_id,
+          account_firstname: accountData.account_firstname,
+          account_lastname: accountData.account_lastname,
+          account_email: accountData.account_email,
+          account_type: accountData.account_type // This is crucial for role-based access
+        }, 
+        process.env.ACCESS_TOKEN_SECRET, 
+        { expiresIn: 3600 * 1000 }
+      )
       if(process.env.NODE_ENV === 'development') {
         res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 })
       } else {
@@ -113,7 +127,8 @@ async function accountLogin(req, res) {
       return res.redirect("/account/")
     }
     else {
-      req.flash("message notice", "Please check your credentials and try again.")
+      // FIX: Use correct flash message type
+      req.flash("notice", "Please check your credentials and try again.")
       res.status(400).render("account/login", {
         title: "Login",
         nav,
@@ -135,8 +150,6 @@ async function buildManagementView(req, res) {
   });
 }
 
-
-
 /* ****************************************
  *  Deliver account update view
  * *************************************** */
@@ -145,7 +158,7 @@ async function buildUpdateView(req, res, next) {
   const account_id = req.params.accountId;
   const accountInfo = await accountModel.getAccountById(account_id);
   res.render("account/update", {
-    title: "Updata Your Account",
+    title: "Update Your Account", // FIX: Typo "Updata" → "Update"
     nav,
     errors: null,
     account_firstname: accountInfo.account_firstname,
@@ -171,18 +184,20 @@ async function updateProfileInfo(req, res, next) {
   );
 
   if (updateResult) {
+    // FIX: Use correct flash message type
     req.flash(
-      "notice successful",
+      "notice",
       `Your account information ${account_firstname} ${account_lastname} was successfully updated.`
     );
     res.redirect("/account/");
   } else {
+    // FIX: Use correct flash message type
     req.flash(
-      "notice failed",
-      "Sorry, the your account information update failed."
+      "notice",
+      "Sorry, your account information update failed."
     );
     res.status(501).render("account/update", {
-      title: "Updata Your Account",
+      title: "Update Your Account", // FIX: Typo
       nav,
       errors: null,
       account_id,
@@ -206,16 +221,18 @@ async function changePassword(req, res, next) {
       // regular password and cost (salt is generated automatically)
       hashedPassword = await bcrypt.hashSync(account_password, 10);
     } catch (error) {
+        // FIX: Use correct flash message type
         req.flash(
-          "notice failed",
+          "notice",
           "Sorry, there was an error processing the password update."
         );
         res.status(500).render("account/update", {
-          title: "Updata Your Account",
+          title: "Update Your Account", // FIX: Typo
           nav,
           errors: null,
           account_id,
         });
+        return; // Add return to stop execution
       }
 
     const changePassword = await accountModel.updatePasswordById(
@@ -223,18 +240,20 @@ async function changePassword(req, res, next) {
       hashedPassword
     );
     if (changePassword) {
+      // FIX: Use correct flash message type
       req.flash(
-        "notice successful",
+        "notice",
         `Your account password was successfully updated.`
       );
       res.redirect("/account/");
     } else {
+        // FIX: Use correct flash message type
         req.flash(
-          "notice failed",
+          "notice",
           "Sorry, your account password update failed."
         );
         res.status(501).render("account/update", {
-          title: "Updata Your Account",
+          title: "Update Your Account", // FIX: Typo
           nav,
           errors: null,
           account_id,
@@ -250,18 +269,16 @@ async function changePassword(req, res, next) {
  * *************************************** */
 async function accountLogout(req, res) {
    if (req.cookies.jwt){
-
     res.clearCookie("jwt")
-
-    req.flash("notice successful", "You have successfully logged out.")
+    // FIX: Use correct flash message type
+    req.flash("notice", "You have successfully logged out.")
     return res.redirect("/")
-
-  }else {
-    req.flash("notice failed", "Please log in.")
+  } else {
+    // FIX: Use correct flash message type
+    req.flash("notice", "Please log in.")
     return res.redirect("/account/login")
   }
 }
-
 
 module.exports = {
   buildLogin,
